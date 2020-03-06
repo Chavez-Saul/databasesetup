@@ -1,14 +1,19 @@
 import os
 import subprocess
 
-def runner(config):
-    process = subprocess.Popen(['sudo', 'su', '-', 'oracle'], universal_newlines=True, stdin=subprocess.PIPE,
+def installDbSoftware(config):
+    process = subprocess.Popen(['sudo', 'su', '-', 'oracle'], universal_newlines=True,
+                               stdin=subprocess.PIPE,
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    process.stdin.write("export ORACLE_HOME=" + config["oraclehome"] +"; " + "export ORACLE_BASE=" + config["base"] + "; "
-                        + "export ORA_INVENTORY=" + config["oraInv"] +"; " + "export ORACLE_HOSTNAME="
+    process.stdin.write("export ORACLE_HOME=" + config["oraclehome"] +"; "
+                        + "export ORACLE_BASE=" + config["base"] + "; "
+                        + "export ORA_INVENTORY=" + config["oraInv"] +"; "
+                        + "export ORACLE_HOSTNAME="
                         + config["hostname"] + "; env;")
     process.stdin.write("cd $ORACLE_HOME;")
-    process.stdin.write("""./runInstaller -ignorePrereq -waitforcompletion -silent -responseFile ${ORACLE_HOME}/install/response/db_install.rsp \\
+    process.stdin.write("unzip " + config["zip"] + "; ")
+    process.stdin.write("""./runInstaller -ignorePrereq -waitforcompletion -silent \\
+    -responseFile ${ORACLE_HOME}/install/response/db_install.rsp \\
     oracle.install.option=INSTALL_DB_SWONLY\\
     ORACLE_HOSTNAME=${ORACLE_HOSTNAME}\\
     UNIX_GROUP_NAME=oinstall\\
@@ -25,15 +30,16 @@ def runner(config):
     SECURITY_UPDATES_VIA_MYORACLESUPPORT=false\\
     DECLINE_SECURITY_UPDATES=true;""")
     process.stdin.close()
+
     for lin in process.stdout:
-        print(lin)
+        print(lin + "stdout")
 
     for line in process.stderr:
-        print(line)
-    print(str(os.getlogin()) + " this is the current user")
+        print(line + " error")
+
 
 if __name__ == "__main__":
-    runner(config)
+    installDbSoftware(config)
 
 
 

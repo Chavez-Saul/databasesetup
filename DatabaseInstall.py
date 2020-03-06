@@ -7,10 +7,8 @@ import UpdateServer
 import RunInstaller
 
 def runSubProcess(configfile):
-    UpdateServer.yumUpdate(configfile)
-    SetupDir.setPremissions(configfile)
-    SetEnv.setEnvforOracle(configfile)
-    RunInstaller.runner(configfile)
+    UpdateServer.initialSetup(configfile)
+    RunInstaller.installDbSoftware(configfile)
 
 def readConfigFile():
     configs = configparser.RawConfigParser()
@@ -39,8 +37,5 @@ if __name__ == "__main__":
     runSubProcess(yumconfig)
     os.getlogin()
 
-
-    
 else:
     print("Executed when imported")
-
