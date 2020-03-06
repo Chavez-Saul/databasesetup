@@ -1,0 +1,6 @@
+#### System Dir #####
+/venv*
+.idea*
+
+### Practice Files ####
+config.ini2
